@@ -15,6 +15,27 @@ namespace UnityStandardAssets.Utility
 
         private SpringJoint2D m_SpringJoint;
 
+        private bool _isDragged;
+
+        public bool IsDragged
+        {
+            get => _isDragged;
+            private set
+            {
+                if (_isDragged != value)
+                {
+                    if (value)
+                        OnDragStart?.Invoke();
+                    else
+                        OnDragEnd?.Invoke();
+                }
+                
+                _isDragged = value;
+            }
+        }
+
+        public Action OnDragStart;
+        public Action OnDragEnd;
 
         private void Update()
         {
@@ -26,10 +47,12 @@ namespace UnityStandardAssets.Utility
 
             var mainCamera = FindCamera();
 
+            var layerMask = 1 << 8;
+            
             // We need to actually hit an object
             var hit = Physics2D.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition).origin,
                                  Vector2.zero, Mathf.Infinity,
-                                 Physics2D.DefaultRaycastLayers);
+                                 layerMask);
             
             // We need to hit a rigidbody that is not kinematic
             if (!hit.rigidbody || hit.rigidbody.isKinematic)
@@ -52,9 +75,11 @@ namespace UnityStandardAssets.Utility
             m_SpringJoint.frequency = frequency;
             m_SpringJoint.dampingRatio = k_Damper;
             //m_SpringJoint.maxDistance = k_Distance;
-            m_SpringJoint.connectedBody = hit.rigidbody;
             m_SpringJoint.autoConfigureDistance = false;
+            m_SpringJoint.connectedBody = hit.rigidbody;
+            
 
+            IsDragged = true;
             StartCoroutine(nameof(DragObject), hit.distance);
         }
 
@@ -77,6 +102,7 @@ namespace UnityStandardAssets.Utility
                 m_SpringJoint.connectedBody.drag = oldDrag;
                 m_SpringJoint.connectedBody.angularDrag = oldAngularDrag;
                 m_SpringJoint.connectedBody = null;
+                IsDragged = false;
             }
         }
 
