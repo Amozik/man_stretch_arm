@@ -12,7 +12,9 @@ namespace ManStretchArm.Code
         private Transform _endPoint;
 
         private LineRenderer _lineRenderer;
-        
+
+        public LineRenderer LineRenderer => _lineRenderer;
+
         private void Awake()
         {
             _lineRenderer = GetComponent<LineRenderer>();

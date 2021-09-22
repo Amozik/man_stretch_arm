@@ -17,6 +17,8 @@ namespace ManStretchArm.Code
         private SpringJoint2D _springJoint;
         [SerializeField] 
         private DragRigidbody _dragRigidbody;
+        [SerializeField] 
+        private Line _lineArm;
         [SerializeField]
         private Transform _point;
         
@@ -25,7 +27,7 @@ namespace ManStretchArm.Code
         private void Awake()
         {
             _armSprite.enabled = false;
-            _springJoint.distance = 0.02f;
+            _springJoint.distance = 0.1f;
             
             _dragRigidbody.OnDragStart += OnDragStart;
             _dragRigidbody.OnDragEnd += OnDragEnd;
@@ -70,16 +72,19 @@ namespace ManStretchArm.Code
 
         private void OnDragStart()
         {
-            Debug.Log("Start Drag");
-            _distanceJoint.enabled = false;
+            //Debug.Log("Start Drag");
+            //_distanceJoint.enabled = false;
         }
         
         private void OnDragEnd()
         {
             if ((_body.position - _point.transform.position).sqrMagnitude < 1.2f)
                 return;
-            Debug.Log("End Drag");
+            //Debug.Log("End Drag");
             //_distanceJoint.enabled = true;
+            
+            _lineArm.LineRenderer.enabled = false;
+            
             _armSprite.enabled = true;
             _springJoint.connectedBody = null;
             StartCoroutine(nameof(DisableJoint));

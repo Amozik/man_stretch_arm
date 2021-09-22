@@ -6,12 +6,18 @@ namespace UnityStandardAssets.Utility
 {
     public class DragRigidbody : MonoBehaviour
     {
-        const float frequency = 8.0f;
-        const float k_Damper = 0.5f;
-        const float k_Drag = 10.0f;
-        const float k_AngularDrag = 5.0f;
-        const float k_Distance = 0.2f;
-        const bool k_AttachToCenterOfMass = false;
+        [SerializeField]
+        private float _frequency = 1.0f;
+        [SerializeField]
+        private float _damper = 0.5f;
+        [SerializeField]
+        private float _drag = 10.0f;
+        [SerializeField]
+        private float _angularDrag = 5.0f;
+        [SerializeField]
+        private float _distance = 0.2f;
+        
+        const bool _attachToCenterOfMass = false;
 
         private SpringJoint2D m_SpringJoint;
 
@@ -71,9 +77,9 @@ namespace UnityStandardAssets.Utility
             m_SpringJoint.transform.position = hit.point;
             m_SpringJoint.anchor = Vector3.zero;
 
-            m_SpringJoint.distance = k_Distance;
-            m_SpringJoint.frequency = frequency;
-            m_SpringJoint.dampingRatio = k_Damper;
+            m_SpringJoint.distance = _distance;
+            m_SpringJoint.frequency = _frequency;
+            m_SpringJoint.dampingRatio = _damper;
             //m_SpringJoint.maxDistance = k_Distance;
             m_SpringJoint.autoConfigureDistance = false;
             m_SpringJoint.connectedBody = hit.rigidbody;
@@ -88,8 +94,8 @@ namespace UnityStandardAssets.Utility
         {
             var oldDrag = m_SpringJoint.connectedBody.drag;
             var oldAngularDrag = m_SpringJoint.connectedBody.angularDrag;
-            m_SpringJoint.connectedBody.drag = k_Drag;
-            m_SpringJoint.connectedBody.angularDrag = k_AngularDrag;
+            m_SpringJoint.connectedBody.drag = _drag;
+            m_SpringJoint.connectedBody.angularDrag = _angularDrag;
             var mainCamera = FindCamera();
             while (Input.GetMouseButton(0))
             {
