@@ -15,6 +15,12 @@ namespace ManStretchArm.Code
 
         public LineRenderer LineRenderer => _lineRenderer;
 
+        public Transform EndPoint
+        {
+            get => _endPoint;
+            set => _endPoint = value;
+        }
+
         private void Awake()
         {
             _lineRenderer = GetComponent<LineRenderer>();

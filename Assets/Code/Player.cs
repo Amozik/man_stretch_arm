@@ -24,8 +24,23 @@ namespace ManStretchArm.Code
         
         private bool _isPicked;
 
+        public void PickPoint(Point point)
+        {
+            if (_isPicked)
+                return;
+
+            _springJoint.connectedBody = point.Rigidbody;
+            _springJoint.enabled = true;
+            _lineArm.EndPoint = point.transform;
+            _lineArm.LineRenderer.enabled = true;
+            _armSprite.enabled = false;
+        }
+        
+        
         private void Awake()
         {
+            _isPicked = true;
+            
             _armSprite.enabled = false;
             _springJoint.distance = 0.1f;
             
@@ -94,6 +109,7 @@ namespace ManStretchArm.Code
         {
             yield return new WaitForSeconds(.1f);
             _springJoint.enabled = false;
+            _isPicked = false;
         }
     }
 }

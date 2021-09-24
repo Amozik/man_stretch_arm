@@ -19,9 +19,28 @@ namespace ManStretchArm.Code
 
         private PointState _state = PointState.Idle;
 
+        private Player _player;
+
+        public Rigidbody2D Rigidbody;
+        
+        
         private void Awake()
         {
             SetState(PointState.Idle);
+
+            _player = FindObjectOfType<Player>();
+            Rigidbody = GetComponent<Rigidbody2D>();
+        }
+
+        private void Update()
+        {
+            if (Input.GetMouseButton(0))
+            {
+                if (_state == PointState.CanPicked)
+                {
+                    _player.PickPoint(this);
+                }
+            }
         }
 
         private void SetState(PointState state)
