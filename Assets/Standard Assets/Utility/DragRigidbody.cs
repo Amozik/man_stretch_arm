@@ -105,9 +105,6 @@ namespace UnityStandardAssets.Utility
             }
             if (m_SpringJoint.connectedBody)
             {
-                m_SpringJoint.connectedBody.drag = oldDrag;
-                m_SpringJoint.connectedBody.angularDrag = oldAngularDrag;
-                m_SpringJoint.connectedBody = null;
                 IsDragged = false;
             }
         }

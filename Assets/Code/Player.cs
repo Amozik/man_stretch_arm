@@ -16,7 +16,7 @@ namespace ManStretchArm.Code
         [SerializeField] 
         private SpringJoint2D _springJoint;
         [SerializeField] 
-        private DragRigidbody _dragRigidbody;
+        private DragPlayer _dragRigidbody;
         [SerializeField] 
         private Line _lineArm;
         [SerializeField]
@@ -24,16 +24,26 @@ namespace ManStretchArm.Code
         
         private bool _isPicked;
 
+        public bool IsPicked => _isPicked;
+        public Transform Transform => _body;
+        public Transform PickedPoint => _point;
+
+        public event Action<bool, Point> Picked;
+        
         public void PickPoint(Point point)
         {
             if (_isPicked)
                 return;
 
+            _isPicked = true;
             _springJoint.connectedBody = point.Rigidbody;
             _springJoint.enabled = true;
             _lineArm.EndPoint = point.transform;
             _lineArm.LineRenderer.enabled = true;
             _armSprite.enabled = false;
+            _point = point.transform;
+            
+            Picked?.Invoke(_isPicked, point);
         }
         
         
@@ -44,8 +54,8 @@ namespace ManStretchArm.Code
             _armSprite.enabled = false;
             _springJoint.distance = 0.1f;
             
-            _dragRigidbody.OnDragStart += OnDragStart;
-            _dragRigidbody.OnDragEnd += OnDragEnd;
+            _dragRigidbody.DragStart += OnDragStart;
+            _dragRigidbody.DragEnd += OnDragEnd;
         }
 
         private void Update() {
@@ -81,8 +91,8 @@ namespace ManStretchArm.Code
 
         private void OnDisable()
         {
-            _dragRigidbody.OnDragStart -= OnDragStart;
-            _dragRigidbody.OnDragStart -= OnDragEnd;
+            _dragRigidbody.DragStart -= OnDragStart;
+            _dragRigidbody.DragStart -= OnDragEnd;
         }
 
         private void OnDragStart()
@@ -101,15 +111,17 @@ namespace ManStretchArm.Code
             _lineArm.LineRenderer.enabled = false;
             
             _armSprite.enabled = true;
-            _springJoint.connectedBody = null;
+            //_springJoint.connectedBody = null;
             StartCoroutine(nameof(DisableJoint));
         }
 
         private IEnumerator DisableJoint()
         {
             yield return new WaitForSeconds(.1f);
+            _springJoint.connectedBody = null;
             _springJoint.enabled = false;
             _isPicked = false;
+            Picked?.Invoke(_isPicked, null);
         }
     }
 }
