@@ -20,20 +20,20 @@ namespace ManStretchArm.Code
         [SerializeField] 
         private Line _lineArm;
         [SerializeField]
-        private Transform _point;
+        private Point _point;
         
         private bool _isPicked;
 
         public bool IsPicked => _isPicked;
         public Transform Transform => _body;
-        public Transform PickedPoint => _point;
+        public Transform PickedPoint => _point.transform;
 
         public event Action<bool, Point> Picked;
         
-        public void PickPoint(Point point)
+        public bool TryPickPoint(Point point)
         {
             if (_isPicked)
-                return;
+                return false;
 
             _isPicked = true;
             _springJoint.connectedBody = point.Rigidbody;
@@ -41,9 +41,11 @@ namespace ManStretchArm.Code
             _lineArm.EndPoint = point.transform;
             _lineArm.LineRenderer.enabled = true;
             _armSprite.enabled = false;
-            _point = point.transform;
+            _point = point;
             
             Picked?.Invoke(_isPicked, point);
+
+            return true;
         }
         
         
@@ -121,7 +123,9 @@ namespace ManStretchArm.Code
             _springJoint.connectedBody = null;
             _springJoint.enabled = false;
             _isPicked = false;
-            Picked?.Invoke(_isPicked, null);
+            _point.UnPick();
+            //_point = null;
+            Picked?.Invoke(_isPicked, _point);
         }
     }
 }

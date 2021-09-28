@@ -774,6 +774,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _acive: {fileID: 1319196027}
   _idle: {fileID: 1719340297}
+  _state: 0
   Rigidbody: {fileID: 0}
 --- !u!50 &638237793
 Rigidbody2D:
@@ -2158,6 +2159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _acive: {fileID: 1219632786}
   _idle: {fileID: 1182319975}
+  _state: 1
   Rigidbody: {fileID: 0}
 --- !u!58 &1249661694
 CircleCollider2D:
@@ -2469,6 +2471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _acive: {fileID: 266359539}
   _idle: {fileID: 75018810}
+  _state: 0
   Rigidbody: {fileID: 0}
 --- !u!50 &1348551058
 Rigidbody2D:
@@ -2807,7 +2810,7 @@ MonoBehaviour:
   _springJoint: {fileID: 1015687533}
   _dragRigidbody: {fileID: 1014710336}
   _lineArm: {fileID: 349783077}
-  _point: {fileID: 1249661692}
+  _point: {fileID: 1249661693}
 --- !u!1 &1871239326
 GameObject:
   m_ObjectHideFlags: 0
@@ -2903,6 +2906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _acive: {fileID: 1175076811}
   _idle: {fileID: 1110838289}
+  _state: 0
   Rigidbody: {fileID: 0}
 --- !u!50 &2053838946
 Rigidbody2D:
@@ -2974,6 +2978,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _acive: {fileID: 228161787}
   _idle: {fileID: 1350546424}
+  _state: 0
   Rigidbody: {fileID: 0}
 --- !u!50 &2060331018
 Rigidbody2D:

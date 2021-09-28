@@ -16,16 +16,21 @@ namespace ManStretchArm.Code
         private GameObject _acive;
         [SerializeField] 
         private GameObject _idle;
-
+        [SerializeField]
         private PointState _state = PointState.Idle;
 
         private Player _player;
 
         public Rigidbody2D Rigidbody;
 
-        private void Awake()
+        public void UnPick()
         {
             SetState(PointState.Idle);
+        }
+        
+        private void Awake()
+        {
+            SetState(_state);
 
             _player = FindObjectOfType<Player>();
             Rigidbody = GetComponent<Rigidbody2D>();
@@ -37,7 +42,8 @@ namespace ManStretchArm.Code
             {
                 if (_state == PointState.CanPicked)
                 {
-                    _player.PickPoint(this);
+                    if (_player.TryPickPoint(this))
+                        SetState(PointState.Picked);
                 }
             }
         }
@@ -46,21 +52,21 @@ namespace ManStretchArm.Code
         {
             _state = state;
             
-            if (_state == PointState.CanPicked)
-            {
-                _acive.SetActive(true); 
-                _idle.SetActive(false);
-            }
-            else
+            if (_state == PointState.Idle)
             {
                 _acive.SetActive(false); 
                 _idle.SetActive(true);
+            }
+            else
+            {
+                _acive.SetActive(true); 
+                _idle.SetActive(false);
             }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("Player") && _state != PointState.Picked)
             {
                 SetState(PointState.CanPicked);
             }
@@ -68,7 +74,7 @@ namespace ManStretchArm.Code
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("Player") && _state == PointState.CanPicked)
             {
                 SetState(PointState.Idle);
             }
