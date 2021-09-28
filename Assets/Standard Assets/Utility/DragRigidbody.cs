@@ -31,17 +31,17 @@ namespace UnityStandardAssets.Utility
                 if (_isDragged != value)
                 {
                     if (value)
-                        OnDragStart?.Invoke();
+                        DragStart?.Invoke();
                     else
-                        OnDragEnd?.Invoke();
+                        DragEnd?.Invoke();
                 }
                 
                 _isDragged = value;
             }
         }
 
-        public Action OnDragStart;
-        public Action OnDragEnd;
+        public event Action DragStart;
+        public event Action DragEnd;
 
         private void Update()
         {
@@ -105,6 +105,9 @@ namespace UnityStandardAssets.Utility
             }
             if (m_SpringJoint.connectedBody)
             {
+                m_SpringJoint.connectedBody.drag = oldDrag;
+                m_SpringJoint.connectedBody.angularDrag = oldAngularDrag;
+                m_SpringJoint.connectedBody = null;
                 IsDragged = false;
             }
         }

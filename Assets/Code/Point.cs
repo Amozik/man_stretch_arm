@@ -22,8 +22,7 @@ namespace ManStretchArm.Code
         private Player _player;
 
         public Rigidbody2D Rigidbody;
-        
-        
+
         private void Awake()
         {
             SetState(PointState.Idle);

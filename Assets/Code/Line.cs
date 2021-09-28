@@ -18,7 +18,11 @@ namespace ManStretchArm.Code
         public Transform EndPoint
         {
             get => _endPoint;
-            set => _endPoint = value;
+            set
+            {
+                _endPoint = value;
+                _lineRenderer.SetPosition(1, (Vector2) _endPoint.position);
+            }
         }
 
         private void Awake()

@@ -16,7 +16,7 @@ namespace ManStretchArm.Code
         [SerializeField] 
         private SpringJoint2D _springJoint;
         [SerializeField] 
-        private DragPlayer _dragRigidbody;
+        private DragRigidbody _dragRigidbody;
         [SerializeField] 
         private Line _lineArm;
         [SerializeField]
@@ -117,7 +117,7 @@ namespace ManStretchArm.Code
 
         private IEnumerator DisableJoint()
         {
-            yield return new WaitForSeconds(.1f);
+            yield return new WaitForSeconds(.15f);
             _springJoint.connectedBody = null;
             _springJoint.enabled = false;
             _isPicked = false;
