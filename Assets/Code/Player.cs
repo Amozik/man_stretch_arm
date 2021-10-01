@@ -16,7 +16,7 @@ namespace ManStretchArm.Code
         [SerializeField] 
         private SpringJoint2D _springJoint;
         [SerializeField] 
-        private DragRigidbody _dragRigidbody;
+        private MoveRigidbody _dragRigidbody;
         [SerializeField] 
         private Line _lineArm;
         [SerializeField]
@@ -26,7 +26,9 @@ namespace ManStretchArm.Code
 
         public bool IsPicked => _isPicked;
         public Transform Transform => _body;
+        public Rigidbody2D Rigidbody;
         public Transform PickedPoint => _point.transform;
+        public Rigidbody2D PickedPointRB => _point.Rigidbody;
 
         public event Action<bool, Point> Picked;
         
@@ -55,6 +57,7 @@ namespace ManStretchArm.Code
             
             _armSprite.enabled = false;
             _springJoint.distance = 0.1f;
+            Rigidbody = _body.GetComponent<Rigidbody2D>();
             
             _dragRigidbody.DragStart += OnDragStart;
             _dragRigidbody.DragEnd += OnDragEnd;
@@ -94,7 +97,7 @@ namespace ManStretchArm.Code
         private void OnDisable()
         {
             _dragRigidbody.DragStart -= OnDragStart;
-            _dragRigidbody.DragStart -= OnDragEnd;
+            _dragRigidbody.DragEnd -= OnDragEnd;
         }
 
         private void OnDragStart()
@@ -114,6 +117,8 @@ namespace ManStretchArm.Code
             
             _armSprite.enabled = true;
             //_springJoint.connectedBody = null;
+            var mouseForce = (_point.transform.position -_body.position);
+            Rigidbody.AddForce(Vector2.ClampMagnitude(mouseForce * 30.5f, 1000), ForceMode2D.Impulse);
             StartCoroutine(nameof(DisableJoint));
         }
 

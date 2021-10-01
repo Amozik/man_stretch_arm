@@ -1191,6 +1191,7 @@ GameObject:
   - component: {fileID: 1014710337}
   - component: {fileID: 1014710336}
   - component: {fileID: 1014710338}
+  - component: {fileID: 1014710339}
   m_Layer: 0
   m_Name: DragSystem
   m_TagString: Untagged
@@ -1205,7 +1206,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1014710335}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58650e15a2607e44daa0f150e0061d89, type: 3}
   m_Name: 
@@ -1236,13 +1237,33 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1014710335}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed2073456e5a4ff389598d7638403664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _maxSpeed: 10
   _maxDistance: 3
+  _player: {fileID: 1865866596}
+--- !u!114 &1014710339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014710335}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb1c614a95da40adb90981389ff22598, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _frequency: 10
+  _dampingRatio: 0.5
+  _drag: 10
+  _angularDrag: 5
+  _distance: 0.2
+  _player: {fileID: 1865866596}
+  _maxSpeed: 5
 --- !u!1 &1015687527
 GameObject:
   m_ObjectHideFlags: 0
@@ -2808,9 +2829,10 @@ MonoBehaviour:
   _armSprite: {fileID: 1015687529}
   _distanceJoint: {fileID: 1015687534}
   _springJoint: {fileID: 1015687533}
-  _dragRigidbody: {fileID: 1014710336}
+  _dragRigidbody: {fileID: 1014710338}
   _lineArm: {fileID: 349783077}
   _point: {fileID: 1249661693}
+  Rigidbody: {fileID: 0}
 --- !u!1 &1871239326
 GameObject:
   m_ObjectHideFlags: 0

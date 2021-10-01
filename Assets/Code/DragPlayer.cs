@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace ManStretchArm.Code
@@ -6,18 +7,24 @@ namespace ManStretchArm.Code
     public class DragPlayer : MonoBehaviour
     {
         [SerializeField]
-        public float _maxSpeed = 10;
+        private float _frequency = 1.0f;
         [SerializeField]
-        public float _maxDistance = 2;
-
-        private Vector3 _offset;
-        private Vector3 _mousePosition;
-
-        private Rigidbody2D _selectedObject;
-
-        private Vector2 _mouseForce;
-        private Vector3 _lastPosition;
+        private float _dampingRatio = 0.5f;
+        [SerializeField]
+        private float _drag = 10.0f;
+        [SerializeField]
+        private float _angularDrag = 5.0f;
+        [SerializeField]
+        private float _distance = 0.2f;
         
+        [SerializeField] 
+        private Player _player;
+
+        [SerializeField] 
+        private float _maxSpeed = 100;
+        
+        private SpringJoint2D _springJoint;
+
         private bool _isDragged;
 
         public bool IsDragged
@@ -36,52 +43,77 @@ namespace ManStretchArm.Code
                 _isDragged = value;
             }
         }
-        
+
         public event Action DragStart;
         public event Action DragEnd;
-
+        
         private void Update()
         {
-            _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            if (_selectedObject)
+            if (!Input.GetMouseButtonDown(0))
             {
-                _mouseForce = (_mousePosition - _lastPosition) / Time.deltaTime;
-                _mouseForce = Vector2.ClampMagnitude(_mouseForce, _maxSpeed);
-                _lastPosition = _mousePosition;
+                return;
             }
 
-            if (Input.GetMouseButtonDown(0))
+            var mainCamera = Camera.main;
+            var layerMask = 1 << 8;
+            var hit = Physics2D.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition).origin,
+                Vector2.zero, Mathf.Infinity,
+                layerMask);
+            
+            if (!hit.rigidbody || hit.rigidbody.isKinematic)
             {
-                var layerMask = 1 << 8;
-                
-                var hit = Physics2D.Raycast(_mousePosition, Vector2.zero, Mathf.Infinity, layerMask);
-
-                if (hit.rigidbody)
-                {
-                    _selectedObject = hit.rigidbody;
-                    _offset = _selectedObject.transform.position - _mousePosition;
-                    IsDragged = true;
-                }
+                return;
             }
 
-            if (Input.GetMouseButtonUp(0) && _selectedObject)
+            if (!_springJoint)
             {
-                _selectedObject.velocity = Vector2.zero;
-                _selectedObject.AddForce(_mouseForce, ForceMode2D.Impulse);
-                _selectedObject = null;
+                var go = new GameObject("Rigidbody dragger");
+                var body = go.AddComponent<Rigidbody2D>();
+                _springJoint = go.AddComponent<SpringJoint2D>();
+                body.isKinematic = true;
+            }
+
+            _springJoint.transform.position = hit.point;
+            _springJoint.anchor = Vector3.zero;
+
+            _springJoint.distance = _distance;
+            _springJoint.frequency = _frequency;
+            _springJoint.dampingRatio = _dampingRatio;
+            _springJoint.autoConfigureDistance = false;
+            _springJoint.connectedBody = hit.rigidbody;
+            
+
+            IsDragged = true;
+            StartCoroutine(nameof(DragObject), hit.distance);
+        }
+        
+        private IEnumerator DragObject(float distance)
+        {
+            var oldDrag = _springJoint.connectedBody.drag;
+            var oldAngularDrag = _springJoint.connectedBody.angularDrag;
+            _springJoint.connectedBody.drag = _drag;
+            _springJoint.connectedBody.angularDrag = _angularDrag;
+            var mainCamera = Camera.main;
+            while (Input.GetMouseButton(0))
+            {
+                var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                _springJoint.transform.position = ray.GetPoint(distance);
+                yield return null;
+            }
+
+            if (_springJoint.connectedBody)
+            {
+                _springJoint.connectedBody.drag = oldDrag;
+                _springJoint.connectedBody.angularDrag = oldAngularDrag;
+                //_springJoint.transform.position = _player.PickedPoint.position*5;
+                _springJoint.connectedBody = null;
+
+                var mouseForce = (_player.PickedPoint.position - _springJoint.transform.position);
+                _player.Rigidbody.AddForce(Vector2.ClampMagnitude(mouseForce * 12.5f, _maxSpeed), ForceMode2D.Impulse);
+                //_springJoint.enabled = false;
                 IsDragged = false;
             }
         }
-
-        private void FixedUpdate()
-        {
-            if (_selectedObject)
-            {
-                //var position = Vector2.ClampMagnitude(mousePosition + offset, _maxDistance);
-                var position = _mousePosition + _offset;
-                _selectedObject.MovePosition(position);
-            }
-        }
+        
     }
 }
