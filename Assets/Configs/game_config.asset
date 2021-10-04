@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa2400f04f84415bd92ec1acbd811a5, type: 3}
   m_Name: game_config
   m_EditorClassIdentifier: 
-  back: {fileID: 0}
+  back: {fileID: 7605069971696888543, guid: 3dd70dad6dbb44f4ba349a6d288140aa, type: 3}

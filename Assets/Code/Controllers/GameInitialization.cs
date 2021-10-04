@@ -13,6 +13,7 @@ namespace ManStretchArm.Code.Controllers
             var player = playerInitialization.GetPlayer();
             
             controllers.Add(new CameraController(player, camera.transform));
+            controllers.Add(new ParallaxController(camera.transform, data.back));
         }
     }
 }
