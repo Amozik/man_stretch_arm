@@ -7,6 +7,8 @@ namespace ManStretchArm.Code
 {
     public class Player : MonoBehaviour
     {
+        [SerializeField] 
+        private float _forceRatio = 25f;
         [SerializeField]
         private Transform _body;
         [SerializeField] 
@@ -116,21 +118,17 @@ namespace ManStretchArm.Code
             _lineArm.LineRenderer.enabled = false;
             
             _armSprite.enabled = true;
-            //_springJoint.connectedBody = null;
-            var mouseForce = (_point.transform.position -_body.position);
-            Rigidbody.AddForce(Vector2.ClampMagnitude(mouseForce * 30.5f, 1000), ForceMode2D.Impulse);
-            StartCoroutine(nameof(DisableJoint));
-        }
-
-        private IEnumerator DisableJoint()
-        {
-            yield return new WaitForSeconds(.15f);
             _springJoint.connectedBody = null;
             _springJoint.enabled = false;
+            
+            var mouseForce = (_point.transform.position -_body.position);
+            Rigidbody.AddForce(Vector2.ClampMagnitude(mouseForce * _forceRatio, 1000), ForceMode2D.Impulse);
+
             _isPicked = false;
             _point.UnPick();
             //_point = null;
             Picked?.Invoke(_isPicked, _point);
         }
+
     }
 }
