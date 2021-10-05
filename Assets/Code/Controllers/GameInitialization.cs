@@ -14,6 +14,7 @@ namespace ManStretchArm.Code.Controllers
             
             controllers.Add(new CameraController(player, camera.transform));
             controllers.Add(new ParallaxController(camera.transform, data.back));
+            controllers.Add(new CoinsController());
         }
     }
 }

@@ -16,6 +16,8 @@ namespace ManStretchArm.Code
         private GameObject _acive;
         [SerializeField] 
         private GameObject _idle;
+        [SerializeField] 
+        private GameObject _canPicked;
         [SerializeField]
         private PointState _state = PointState.Idle;
 
@@ -46,21 +48,36 @@ namespace ManStretchArm.Code
                         SetState(PointState.Picked);
                 }
             }
+
+            if (_state == PointState.CanPicked)
+            {
+                transform.Rotate(0,0, 2.5f);
+            }
         }
 
         private void SetState(PointState state)
         {
             _state = state;
-            
-            if (_state == PointState.Idle)
+
+            switch (_state)
             {
-                _acive.SetActive(false); 
-                _idle.SetActive(true);
-            }
-            else
-            {
-                _acive.SetActive(true); 
-                _idle.SetActive(false);
+                case PointState.Idle:
+                    _acive.SetActive(false); 
+                    _idle.SetActive(true);
+                    _canPicked.SetActive(false);
+                    break;
+                case PointState.CanPicked:
+                    _acive.SetActive(false); 
+                    _idle.SetActive(false);
+                    _canPicked.SetActive(true);
+                    break;
+                case PointState.Picked:
+                    _acive.SetActive(true); 
+                    _idle.SetActive(false);
+                    _canPicked.SetActive(false);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
