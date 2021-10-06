@@ -1,4 +1,5 @@
 ﻿using ManStretchArm.Code.Data;
+using ManStretchArm.Code.Views;
 using UnityEngine;
 
 namespace ManStretchArm.Code.Controllers
@@ -11,10 +12,12 @@ namespace ManStretchArm.Code.Controllers
             
             var playerInitialization = new PlayerInitialization();
             var player = playerInitialization.GetPlayer();
+            var ground = Object.FindObjectOfType<GroundView>();
             
-            controllers.Add(new CameraController(player, camera.transform));
+            controllers.Add(new CameraController(player, camera, ground));
             controllers.Add(new ParallaxController(camera.transform, data.back));
             controllers.Add(new CoinsController());
+            controllers.Add(new GroundController(camera.transform, player, ground));
         }
     }
 }

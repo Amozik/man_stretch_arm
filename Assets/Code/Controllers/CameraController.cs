@@ -1,5 +1,6 @@
 ﻿using System;
 using ManStretchArm.Code.Interfaces;
+using ManStretchArm.Code.Views;
 using UnityEngine;
 
 namespace ManStretchArm.Code.Controllers
@@ -7,6 +8,7 @@ namespace ManStretchArm.Code.Controllers
     public class CameraController : IUpdate, ICleanup
     {
         private Player _player;
+        private Camera _camera;
         private Transform _mainCamera;
         
         private Vector3 _offset;
@@ -16,11 +18,14 @@ namespace ManStretchArm.Code.Controllers
 
         private float smoothTime = 0.3f;
         private Vector3 velocity = Vector3.zero;
-        
-        public CameraController(Player player, Transform mainCamera)
+        private GroundView _ground;
+
+        public CameraController(Player player, Camera mainCamera, GroundView ground)
         {
             _player = player;
-            _mainCamera = mainCamera;
+            _camera = mainCamera;
+            _mainCamera = mainCamera.transform;
+            _ground = ground;
             //_offset = _mainCamera.position - _player.Transform.position;
             _offset = _mainCamera.position - _player.PickedPoint.position;
             _offset.z = _mainCamera.position.z;
@@ -30,6 +35,7 @@ namespace ManStretchArm.Code.Controllers
             _minMaxY.x = _player.PickedPoint.position.y + _offset.y;
             
             _player.Picked += OnPlayerPicked;
+            _ground.LevelObjectContactEvent += OnPlayerDead;
         }
 
         public void Update(float deltaTime)
@@ -53,6 +59,7 @@ namespace ManStretchArm.Code.Controllers
         public void Cleanup()
         {
             _player.Picked -= OnPlayerPicked;
+            _ground.LevelObjectContactEvent -= OnPlayerDead;
         }
 
         private void OnPlayerPicked(bool isPicked, Point point)
@@ -66,5 +73,11 @@ namespace ManStretchArm.Code.Controllers
                 _minMaxY.x = 0;
             }
         }
+        
+        private void OnPlayerDead(GroundView ground)
+        {
+            _minMaxY.x = ground.Transform.position.y + _camera.orthographicSize;
+        }
+        
     }
 }

@@ -27,7 +27,12 @@ namespace ManStretchArm.Code
         private bool _isPicked;
 
         public bool IsPicked => _isPicked;
-        public Transform Transform => _body;
+        public Transform Transform
+        {
+            get => _body;
+            private set => _body = value;
+        }
+
         public Rigidbody2D Rigidbody;
         public Transform PickedPoint => _point.transform;
         public Rigidbody2D PickedPointRB => _point.Rigidbody;
